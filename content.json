@@ -1,0 +1,27 @@
+{
+ "address": "16RMEZXFTLXcWFUA5vCEaw2vGpYVZ6iJtN",
+ "description": "Complementary & alternative money demo - Wallet 1 - BitCoins",
+ "favicon": "favicon.ico",
+ "files": {
+  "index.html": {
+   "sha512": "d97b11d1ed38266726c9e67bb858fae8cac1c9ab21b596180eb97e2dfc5aacb9",
+   "size": 41
+  }
+ },
+ "ignore": "",
+ "inner_path": "content.json",
+ "modified": 1491996230,
+ "postmessage_nonce_security": true,
+ "sign": [
+  90713306384019726786216942878419444936881267317558397838607950945635944914794,
+  59180473549529281583207477304482125432048409277825164360399659602087090102705
+ ],
+ "signers_sign": "G3VcC7Qs+wrqSQ9Xam0YIdDIJ3sy003XHvkG7TNK7ej6aDOZxpguv3n5COvQdgwrN5qtEoeqy+lBaal9dRoMtiY=",
+ "signs": {
+  "16RMEZXFTLXcWFUA5vCEaw2vGpYVZ6iJtN": "HDZLQMTv82klITk3NtXKI1B74MptCQDdrhNmwBwoKc4cLdCmfeBEmUPw4zvTDrHHJCCrkSc1B0jjSMfmeOkbHUo="
+ },
+ "signs_required": 1,
+ "title": "Money Network - W1",
+ "viewport": "width=device-width, initial-scale=1.0",
+ "zeronet_version": "0.5.3"
+}
