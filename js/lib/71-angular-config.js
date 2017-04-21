@@ -38,8 +38,19 @@ angular.module('MoneyNetworkW1')
                     return a_path;
                 }
             });
+
         // end config (ng-routes)
 
+    }])
+
+    .config(['$wampProvider', function ($wampProvider) {
+        var pgm = 'wampProvider: ';
+        console.log(pgm + 'creation session on greenaddress.it');
+        $wampProvider.init({
+            url: 'wss://prodwss.greenaddress.it/v2/ws/',
+            realm: 'realm1'
+            //Any other AutobahnJS options
+        });
     }])
 
 ;
