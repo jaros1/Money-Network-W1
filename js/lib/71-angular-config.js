@@ -52,6 +52,9 @@ angular.module('MoneyNetworkW1')
             //Any other AutobahnJS options
         });
     }])
+    .run(function($wamp){
+        $wamp.open();
+    })
 
 ;
 
