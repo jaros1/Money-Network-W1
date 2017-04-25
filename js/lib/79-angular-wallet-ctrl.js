@@ -19,22 +19,26 @@ angular.module('MoneyNetworkW1')
                 cb (mnemonic) ;
             }) ;
         }
-
-        //
-        function mnemonicToSeed (mnemonic, password) {
-            var mnemonicBuffer = new Buffer(unorm.nfkd(mnemonic), 'utf8');
-            var saltBuffer = new Buffer(salt(unorm.nfkd(password)), 'utf8');
-
-            return pbkdf2(mnemonicBuffer, saltBuffer, 2048, 64, 'sha512');
+        // get BitCoin HD node
+        function get_hd_node (mnemonic) {
+            var pgm = controller + '.get_hd_node: ' ;
+            var cur_net = bitcoin.networks.bitcoin;  // 'testnet' for testnet
+            console.log(pgm + 'mybip39 = ', mybip39) ;
+            var seed = mybip39.mnemonicToSeedHex(mnemonic);  // this is slow, perhaps move to a webworker
+            return bitcoin.HDNode.fromSeedHex(seed, cur_net);
+            // NOTE: master priv key shouldn't be used for signing because repeated signing using the
+            // same key is dangerous, so in production a random BIP32 subpath should be used.
+            // See https://github.com/greenaddress/GreenAddressWebFiles/blob/c675736a0839d109df65c3555a9c22829b9ef4cd/static/js/greenwallet/services.js#L2173
+            // for example implementation
         }
-        function mnemonicToSeedHex (mnemonic, password) {
-            return mnemonicToSeed(mnemonic, password).toString('hex');
-        }
-
 
         // callback 1 - get mnemonic
         get_mnemonic(function (mnemonic) {
+            var pgm = controller + '.get_mnemonic: ' ;
             console.log('mnemonic = ' + mnemonic) ;
+            // get BitCoin HD node
+            var derive_hd = get_hd_node (mnemonic) ;
+            console.log(pgm + 'derive_hd = ' + JSON.stringify(derive_hd)) ;
         }) ;
 
 
