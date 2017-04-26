@@ -491,6 +491,7 @@ function BigInteger(a, b, c) {
     else this.fromString(a, b)
   }
 }
+window.BigInteger = BigInteger;
 
 var proto = BigInteger.prototype
 

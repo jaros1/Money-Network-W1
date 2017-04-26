@@ -5,14 +5,17 @@ angular.module('MoneyNetworkW1')
         var controller = 'WalletCtrl';
         console.log(controller + ' loaded');
 
-        // set caller_desclose_me
+        // connecting to greenaddress.it API (online BitCoin wallet)
+        // https://api.greenaddress.it/examples/login.html
+
+        // on wamp connect - set caller_desclose_me - https://github.com/voryx/angular-wamp/issues/41
         $scope.$on("$wamp.open", function (event, info) {
             console.log('We are connected to the WAMP Router!');
-            // https://github.com/voryx/angular-wamp/issues/41
+            //
             info.session.caller_disclose_me = true;
         });
 
-        // helpers
+        // login helpers
         // get mnemonic
         function get_mnemonic (cb) {
             ZeroFrame.cmd("wrapperPrompt", ["Enter mnemonic", "mnemonic"], function (mnemonic) {
@@ -23,8 +26,8 @@ angular.module('MoneyNetworkW1')
         function get_hd_node (mnemonic) {
             var pgm = controller + '.get_hd_node: ' ;
             var cur_net = bitcoin.networks.bitcoin;  // 'testnet' for testnet
-            console.log(pgm + 'mybip39 = ', mybip39) ;
-            var seed = mybip39.mnemonicToSeedHex(mnemonic);  // this is slow, perhaps move to a webworker
+            console.log(pgm + 'bip39 = ', bip39) ;
+            var seed = bip39.mnemonicToSeedHex(mnemonic);  // this is slow, perhaps move to a webworker
             return bitcoin.HDNode.fromSeedHex(seed, cur_net);
             // NOTE: master priv key shouldn't be used for signing because repeated signing using the
             // same key is dangerous, so in production a random BIP32 subpath should be used.
@@ -32,9 +35,20 @@ angular.module('MoneyNetworkW1')
             // for example implementation
         }
 
+        // get random_path_hex (sign challenge)
+        function get_random_path_hex () {
+            var byteArray, hexString ;
+            byteArray = window.crypto.getRandomValues(new Uint8Array(8));
+            hexString = Array.prototype.map.call(byteArray, function(byte) {
+                return ('0' + (byte & 0xFF).toString(16)).slice(-2);
+            }).join('') ;
+            while (hexString.length < 16) hexString = '0' + hexString;
+            return hexString ;
+        }
+
         // callback 1 - get mnemonic
         get_mnemonic(function (mnemonic) {
-            var pgm = controller + '.get_mnemonic: ' ;
+            var pgm = controller + '.get_mnemonic callback 1: ' ;
             // console.log('mnemonic = ' + mnemonic) ;
             // get BitCoin HD node
             var derive_hd = get_hd_node (mnemonic) ;
@@ -122,10 +136,22 @@ angular.module('MoneyNetworkW1')
             console.log(controller + 'calling com.greenaddress.login.get_challenge') ;
             $wamp.call('com.greenaddress.login.get_challenge', ['1PJj9Sf4KDu4rwTvwQA6rkhz4ojbwWHBoE'])
                 .then(function (challenge) {
-                    console.log('challenge = ' + JSON.stringify(challenge));
-                });
+                    var pgm = controller + '.get_challenge callback 2: ' ;
+                    var challenge_bytes, random_path_hex, sub_hd ;
+                    console.log(pgm + 'challenge = ' + JSON.stringify(challenge));
+                    challenge_bytes = new BigInteger(challenge).toByteArrayUnsigned();
 
-        }) ;
+                    // generate random path to derive key from - avoids signing using the same key twice
+                    var random_path_hex = get_random_path_hex();
+                    console.log(pgm + 'random_path_hex = ' + random_path_hex) ;
+
+
+                    sub_hd = derive_hd.subpath_for_login(random_path_hex) ;
+                    console.log(pgm + 'sub_hd = ', sub_hd) ;
+
+                }); // get_challenge callback 2
+
+        }) ; // get_mnemonic callback 1
 
 
         // end WalletCtrl
