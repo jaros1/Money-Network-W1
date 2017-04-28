@@ -1,5 +1,5 @@
 // angularJS app
-angular.module('MoneyNetworkW1', ['ngRoute', 'ngSanitize', 'ui.bootstrap', 'ngDialog', 'vxWamp']);
+angular.module('MoneyNetworkW1', ['ngRoute', 'ngSanitize', 'ui.bootstrap', 'ngDialog', 'vxWamp', 'greenWalletServices']);
 
 angular.module('MoneyNetworkW1')
 

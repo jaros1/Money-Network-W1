@@ -1,6 +1,6 @@
 angular.module('MoneyNetworkW1')
 
-    .controller('WalletCtrl', ['$window', 'MoneyNetworkW1Service', '$wamp', '$scope', function ($window, moneyNetworkService, $wamp, $scope) {
+    .controller('WalletCtrl', ['$window', 'MoneyNetworkW1Service', '$wamp', '$scope', 'WalletsService', function ($window, moneyNetworkService, $wamp, $scope, walletsService) {
         var self = this;
         var controller = 'WalletCtrl';
         console.log(controller + ' loaded');
@@ -25,10 +25,13 @@ angular.module('MoneyNetworkW1')
         // get BitCoin HD node
         function get_hd_node (mnemonic) {
             var pgm = controller + '.get_hd_node: ' ;
-            var cur_net = bitcoin.networks.bitcoin;  // 'testnet' for testnet
+            var cur_net, seed, hdwallet ;
+            cur_net = bitcoin.networks.bitcoin;  // 'testnet' for testnet
             console.log(pgm + 'bip39 = ', bip39) ;
-            var seed = bip39.mnemonicToSeedHex(mnemonic);  // this is slow, perhaps move to a webworker
-            return bitcoin.HDNode.fromSeedHex(seed, cur_net);
+            seed = bip39.mnemonicToSeedHex(mnemonic);  // this is slow, perhaps move to a webworker
+            hdwallet = bitcoin.HDNode.fromSeedHex(seed, cur_net);
+            hdwallet.seed_hex = seed ;
+            return hdwallet ;
             // NOTE: master priv key shouldn't be used for signing because repeated signing using the
             // same key is dangerous, so in production a random BIP32 subpath should be used.
             // See https://github.com/greenaddress/GreenAddressWebFiles/blob/c675736a0839d109df65c3555a9c22829b9ef4cd/static/js/greenwallet/services.js#L2173
@@ -51,9 +54,9 @@ angular.module('MoneyNetworkW1')
             var pgm = controller + '.get_mnemonic callback 1: ' ;
             // console.log('mnemonic = ' + mnemonic) ;
             // get BitCoin HD node
-            var derive_hd = get_hd_node (mnemonic) ;
-            console.log(pgm + 'derive_hd = ' + JSON.stringify(derive_hd)) ;
-            //derive_hd = {
+            var hdwallet = get_hd_node (mnemonic) ;
+            console.log(pgm + 'hdwallet = ' + JSON.stringify(hdwallet)) ;
+            //hdwallet = {
             //    "keyPair": {
             //        "d": {
             //            "0": 17545736,
@@ -132,24 +135,30 @@ angular.module('MoneyNetworkW1')
             //    "_is_retrying": false,
             //    "_retry_timer": null
             //};
-            console.log(controller + ': session = ' + JSON.stringify($wamp.session)) ;
-            console.log(controller + 'calling com.greenaddress.login.get_challenge') ;
-            $wamp.call('com.greenaddress.login.get_challenge', ['1PJj9Sf4KDu4rwTvwQA6rkhz4ojbwWHBoE'])
-                .then(function (challenge) {
-                    var pgm = controller + '.get_challenge callback 2: ' ;
-                    var challenge_bytes, random_path_hex, sub_hd ;
-                    console.log(pgm + 'challenge = ' + JSON.stringify(challenge));
-                    challenge_bytes = new BigInteger(challenge).toByteArrayUnsigned();
 
-                    // generate random path to derive key from - avoids signing using the same key twice
-                    var random_path_hex = get_random_path_hex();
-                    console.log(pgm + 'random_path_hex = ' + random_path_hex) ;
+            walletsService.login($scope||{wallet:{}}, hdwallet,
+                mnemonic, false, false, null).then(function() {
+                    console.log(pgm + 'login ok');
+                });
 
-
-                    sub_hd = derive_hd.subpath_for_login(random_path_hex) ;
-                    console.log(pgm + 'sub_hd = ', sub_hd) ;
-
-                }); // get_challenge callback 2
+            //console.log(controller + ': session = ' + JSON.stringify($wamp.session)) ;
+            //console.log(controller + 'calling com.greenaddress.login.get_challenge') ;
+            //$wamp.call('com.greenaddress.login.get_challenge', ['1PJj9Sf4KDu4rwTvwQA6rkhz4ojbwWHBoE'])
+            //    .then(function (challenge) {
+            //        var pgm = controller + '.get_challenge callback 2: ' ;
+            //        var challenge_bytes, random_path_hex, sub_hd ;
+            //        console.log(pgm + 'challenge = ' + JSON.stringify(challenge));
+            //        challenge_bytes = new BigInteger(challenge).toByteArrayUnsigned();
+            //
+            //        // generate random path to derive key from - avoids signing using the same key twice
+            //        var random_path_hex = get_random_path_hex();
+            //        console.log(pgm + 'random_path_hex = ' + random_path_hex) ;
+            //
+            //
+            //        sub_hd = hdwallet.subpath_for_login(random_path_hex) ;
+            //        console.log(pgm + 'sub_hd = ', sub_hd) ;
+            //
+            //    }); // get_challenge callback 2
 
         }) ; // get_mnemonic callback 1
 

@@ -13329,3 +13329,5 @@ module.exports = {
 
 },{"./address":8,"./block":9,"./bufferutils":10,"./crypto":11,"./ecpair":13,"./ecsignature":14,"./hdnode":15,"./message":16,"./networks":17,"./opcodes.json":18,"./script":19,"./transaction":21,"./transaction_builder":22}]},{},[])("bitcoinjs-lib")
 });
+
+Bitcoin = bitcoin ;
