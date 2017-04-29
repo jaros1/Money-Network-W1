@@ -11,6 +11,21 @@ angular.module('MoneyNetworkW1')
             // end MoneyNetworkW1Service
         }])
 
+    .factory('user_agent', [function() {
+        var is_chrome_app = window.chrome && chrome.storage,
+            is_cordova_app = window.cordova;
+        return function(wallet) {
+            if (is_cordova_app) {
+                return 'Cordova ' + cordova.platformId +
+                    ' (version=' + wallet.version + ')';
+            } else if (is_chrome_app) {
+                return 'Chrome ' + '(version=' + wallet.version + ')';
+            } else {
+                return 'Browser';
+            }
+        };
+    }])
+
     // tx_sender: copy/paste relevant code from greenWalletServices.js
     // https://github.com/greenaddress/GreenAddressWebFiles/blob/c675736a0839d109df65c3555a9c22829b9ef4cd/static/js/greenwallet/services.js
     .factory('tx_sender', ['$q', '$wamp',

@@ -3041,7 +3041,7 @@ module.exports = {
 var baddress = require('./address')
 var bcrypto = require('./crypto')
 var ecdsa = require('./ecdsa')
-var randomBytes = require('randombytes')
+var randomBytes = require('randombytes'); window.randombytes = randomBytes;
 var typeforce = require('typeforce')
 var types = require('./types')
 var wif = require('wif')
@@ -5588,7 +5588,7 @@ var base64 = require('base64-js')
 var ieee754 = require('ieee754')
 var isArray = require('isarray')
 
-exports.Buffer = Buffer
+exports.Buffer = Buffer; window.Buffer = Buffer ;
 exports.SlowBuffer = SlowBuffer
 exports.INSPECT_MAX_BYTES = 50
 
@@ -13331,3 +13331,10 @@ module.exports = {
 });
 
 Bitcoin = bitcoin ;
+Bitcoin.bitcoin = bitcoin ;
+Bitcoin.BigInteger = BigInteger ;
+Bitcoin.randombytes = window.randombytes ;
+Bitcoin.Buffer = window.Buffer ;
+Bitcoin.Buffer.Buffer = Bitcoin.Buffer ;
+console.log('Bitcoin (1) = ', Bitcoin);
+console.log('window.Buffer (1) = ', window.Buffer);
