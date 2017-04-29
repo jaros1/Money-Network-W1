@@ -1,6 +1,6 @@
 angular.module('MoneyNetworkW1')
 
-    .controller('WalletCtrl', ['$window', 'MoneyNetworkW1Service', '$wamp', '$scope', 'WalletsService', function ($window, moneyNetworkService, $wamp, $scope, walletsService) {
+    .controller('WalletCtrl', ['$window', 'MoneyNetworkW1Service', '$wamp', '$scope', 'WalletsService', '$q', function ($window, moneyNetworkService, $wamp, $scope, walletsService, q) {
         var self = this;
         var controller = 'WalletCtrl';
         console.log(controller + ' loaded');
@@ -138,7 +138,9 @@ angular.module('MoneyNetworkW1')
 
             walletsService.login($scope||{wallet:{}}, hdwallet,
                 mnemonic, false, false, null).then(function() {
+                    var deferred = $q.defer();
                     console.log(pgm + 'login ok');
+                    return deferred.promise;
                 });
 
             //console.log(controller + ': session = ' + JSON.stringify($wamp.session)) ;

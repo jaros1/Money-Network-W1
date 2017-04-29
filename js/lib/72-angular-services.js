@@ -67,8 +67,13 @@ angular.module('MoneyNetworkW1')
                                     ).toString(16);
                                     while (random_path_hex.length < 16) random_path_hex = '0' + random_path_hex;
                                     console.log('random_path_hex = ' + random_path_hex) ;
+
+                                    console.log('$q = ', $q) ;
+
                                     $q.when(hdwallet.subpath_for_login(random_path_hex)).then(function(subhd) {
+                                        console.log('subhd = ', subhd) ;
                                         $q.when(subhd.keyPair.sign(challenge_bytes)).then(function(signature) {
+                                            console.log('signature = ', signature) ;
                                             d_main.resolve(device_id().then(function(devid) {
                                                 if (session_for_login && session_for_login.nc == nconn) {
                                                     if (!cur_net.isAlpha) {

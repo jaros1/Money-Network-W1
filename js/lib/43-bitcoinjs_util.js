@@ -82,6 +82,7 @@ Bitcoin.Util = {
 if (self.angular) {  // not in WebWorkers
     var $q = angular.injector(['ng']).get('$q');
 }
+console.log('$q = ', $q) ;
 
 if (self.cordova && cordova.platformId == 'ios') {
 
@@ -284,6 +285,7 @@ Bitcoin.bitcoin.HDNode.prototype.subpath = function(path_hex) {
 }
 Bitcoin.bitcoin.HDNode.prototype.subpath_for_login = function(path_hex) {
     // derive private key for signing the challenge, using 8 bytes instead of 64
+    console.log('path_hex = ', path_hex) ;
     var key = $q.when(this);
     if (path_hex.length == 17 && path_hex[0] == '0') {  // new version with leading 0
         path_hex = path_hex.slice(1);
@@ -305,6 +307,7 @@ Bitcoin.bitcoin.HDNode.prototype.subpath_for_login = function(path_hex) {
             });
         }
     }
+    console.log('key = ', key) ;
     return key;
 }
 
