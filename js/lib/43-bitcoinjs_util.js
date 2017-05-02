@@ -81,8 +81,10 @@ Bitcoin.Util = {
 
 if (self.angular) {  // not in WebWorkers
     var $q = angular.injector(['ng']).get('$q');
+    console.log('43-bitcoinjs_util.js: $q (1) = ', $q) ;
 }
-console.log('$q = ', $q) ;
+else console.log('43-bitcoinjs_util.js: $q (2) = ', $q) ;
+window.$q2 = $q ;
 
 if (self.cordova && cordova.platformId == 'ios') {
 
@@ -285,12 +287,13 @@ Bitcoin.bitcoin.HDNode.prototype.subpath = function(path_hex) {
 }
 Bitcoin.bitcoin.HDNode.prototype.subpath_for_login = function(path_hex) {
     // derive private key for signing the challenge, using 8 bytes instead of 64
-    console.log('path_hex = ', path_hex) ;
-    var key = $q.when(this);
+    var pgm = 'Bitcoin.bitcoin.HDNode.prototype.subpath_for_login: ' ;
+    var key, path_bytes, i ;
+    key = $q.when(this);
     if (path_hex.length == 17 && path_hex[0] == '0') {  // new version with leading 0
         path_hex = path_hex.slice(1);
-        var path_bytes = new Bitcoin.Buffer.Buffer(path_hex, 'hex');
-        for (var i = 0; i < 2; i++) {
+        path_bytes = new Bitcoin.Buffer.Buffer(path_hex, 'hex');
+        for (i = 0; i < 2; i++) {
             key = key.then(function(key) {
                 var dk = key.derive(+Bitcoin.BigInteger.fromBuffer(path_bytes.slice(0, 4)));
                 path_bytes = path_bytes.slice(4);
@@ -298,8 +301,10 @@ Bitcoin.bitcoin.HDNode.prototype.subpath_for_login = function(path_hex) {
             });
         }
     } else {
-        var path_bytes = new Bitcoin.Buffer.Buffer(path_hex, 'hex');
-        for (var i = 0; i < 4; i++) {
+        path_bytes = new Bitcoin.Buffer.Buffer(path_hex, 'hex');
+        console.log(pgm + 'path_bytes=', path_bytes);
+        for (i = 0; i < 4; i++) {
+            console.log(pgm + 'i=', i, ', key=', key, CircularJSON.stringify(key));
             key = key.then(function(key) {
                 var dk = key.derive(+Bitcoin.BigInteger.fromBuffer(path_bytes.slice(0, 2)));
                 path_bytes = path_bytes.slice(2);
@@ -307,7 +312,7 @@ Bitcoin.bitcoin.HDNode.prototype.subpath_for_login = function(path_hex) {
             });
         }
     }
-    console.log('key = ', key) ;
+    console.log(pgm + 'path_hex=', path_hex, ', key = ', key, CircularJSON.stringify(key)) ;
     return key;
 }
 

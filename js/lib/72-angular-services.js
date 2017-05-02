@@ -28,8 +28,8 @@ angular.module('MoneyNetworkW1')
 
     // tx_sender: copy/paste relevant code from greenWalletServices.js
     // https://github.com/greenaddress/GreenAddressWebFiles/blob/c675736a0839d109df65c3555a9c22829b9ef4cd/static/js/greenwallet/services.js
-    .factory('tx_sender', ['$q', '$wamp',
-        function ($q, $wamp) {
+    .factory('tx_sender', ['$wamp',
+        function ($wamp) {
             var txSenderService = this;
             var service = 'tx_sender';
             console.log(service + ' loaded');
@@ -68,7 +68,8 @@ angular.module('MoneyNetworkW1')
                                     while (random_path_hex.length < 16) random_path_hex = '0' + random_path_hex;
                                     console.log('random_path_hex = ' + random_path_hex) ;
 
-                                    console.log('$q = ', $q) ;
+                                    console.log(pgm + '$q (2) = ', $q) ;
+                                    console.log(pgm + '$q2 (2) = ', $q2) ;
 
                                     $q.when(hdwallet.subpath_for_login(random_path_hex)).then(function(subhd) {
                                         console.log('subhd = ', subhd) ;

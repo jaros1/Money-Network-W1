@@ -14920,6 +14920,8 @@ function qFactory(nextTick, exceptionHandler) {
 
   extend(Deferred.prototype, {
     resolve: function(val) {
+      var pgm = '40-angular.js: resolve: ';
+      console.log(pgm + 'val=', val);
       if (this.promise.$$state.status) return;
       if (val === this.promise) {
         this.$$reject($qMinErr(
@@ -15083,8 +15085,11 @@ function qFactory(nextTick, exceptionHandler) {
 
 
   var when = function(value, callback, errback, progressBack) {
+    var pgm = '40-angular: q.when: ' ;
+    console.log(pgm, 'value=', value, ', callback=', callback, ', errback=', errback, ', progressBack=', progressBack);
     var result = new Deferred();
     result.resolve(value);
+    console.log(pgm, 'result=', result);
     return result.promise.then(callback, errback, progressBack);
   };
 
