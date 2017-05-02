@@ -69,7 +69,6 @@ angular.module('MoneyNetworkW1')
                                     console.log('random_path_hex = ' + random_path_hex) ;
 
                                     console.log(pgm + '$q (2) = ', $q) ;
-                                    console.log(pgm + '$q2 (2) = ', $q2) ;
 
                                     $q.when(hdwallet.subpath_for_login(random_path_hex)).then(function(subhd) {
                                         console.log('subhd = ', subhd) ;
