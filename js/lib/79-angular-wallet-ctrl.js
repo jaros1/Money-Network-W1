@@ -26,10 +26,10 @@ angular.module('MoneyNetworkW1')
         function get_hd_node (mnemonic) {
             var pgm = controller + '.get_hd_node: ' ;
             var cur_net, seed, hdwallet ;
-            cur_net = bitcoin.networks.bitcoin;  // 'testnet' for testnet
+            cur_net = Bitcoin.networks.bitcoin;  // 'testnet' for testnet
             console.log(pgm + 'bip39 = ', bip39) ;
             seed = bip39.mnemonicToSeedHex(mnemonic);  // this is slow, perhaps move to a webworker
-            hdwallet = bitcoin.HDNode.fromSeedHex(seed, cur_net);
+            hdwallet = Bitcoin.HDNode.fromSeedHex(seed, cur_net);
             hdwallet.seed_hex = seed ;
             return hdwallet ;
             // NOTE: master priv key shouldn't be used for signing because repeated signing using the

@@ -91,6 +91,7 @@ angular.element(document).ready(function () {
         if (!ready && (!this.readyState || this.readyState == 'complete')) {
             ready = true;
             var cur_net = Bitcoin.bitcoin.networks['bitcoin']; // bitcoin or testnet
+            console.log('cur_net=', cur_net);
             Bitcoin.contrib.init_secp256k1(Module, cur_net.isAlpha);
             if (cur_net.isAlpha) {
                 Module._secp256k1_pedersen_context_initialize(Module.secp256k1ctx);
@@ -140,7 +141,10 @@ Bitcoin.bitcoin.HDNode.prototype.subpath_for_login = function(path_hex) {
         for (i = 0; i < 4; i++) {
             console.log(pgm + 'i=', i, ', key=', key, CircularJSON.stringify(key));
             key = key.then(function(key) {
-                var dk = key.derive(+Bitcoin.BigInteger.fromBuffer(path_bytes.slice(0, 2)));
+                var derive_input = Bitcoin.BigInteger.fromBuffer(path_bytes.slice(0, 2)) ;
+                derive_input = derive_input.toString(10) ;
+                derive_input = parseInt(derive_input) ;
+                var dk = key.derive(derive_input);
                 path_bytes = path_bytes.slice(2);
                 return dk;
             });
