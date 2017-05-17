@@ -38,6 +38,7 @@
  },
  "ignore": "((js|css)/(?!all.(js|css))|.idea|.git)",
  "inner_path": "content.json",
+ "merged_type": "MoneyNetwork",
  "modified": 1493993640,
  "postmessage_nonce_security": true,
  "sign": [
